@@ -16,16 +16,12 @@ type Message struct {
 }
 
 func (m Message) Bytes() []byte {
-	b, _ := json.Marshal(m)
-	return b
-}
-
-func (m Message) GoodEggsEventString() string {
 	if m.JSON != nil {
 		b, _ := json.Marshal(m.JSON)
-		return string(b)
+		return b
 	}
-	return m.Event.String()
+	b, _ := json.Marshal(m)
+	return b
 }
 
 func (m Message) String() string {
@@ -33,6 +29,10 @@ func (m Message) String() string {
 }
 
 func (m Message) ContentLength() int {
+	if m.JSON != nil {
+		n, _ := jutil.Length(m.JSON)
+		return n
+	}
 	n, _ := jutil.Length(m.Event)
 	return n
 }

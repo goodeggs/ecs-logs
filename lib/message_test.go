@@ -35,7 +35,7 @@ func TestMessageString(t *testing.T) {
 	}
 }
 
-func TestGoodEggsEventStringWithJSON(t *testing.T) {
+func TestStringWithJSON(t *testing.T) {
 	d := time.Date(2016, 6, 13, 12, 23, 42, 123456000, time.Local)
 	json := make(map[string]interface{})
 	json["msg"] = "hello world"
@@ -54,31 +54,7 @@ func TestGoodEggsEventStringWithJSON(t *testing.T) {
 
 	ref := `{"msg":"hello world"}`
 
-	if s := m.GoodEggsEventString(); s != ref {
-		t.Errorf("invalid string representation of the message:\n - expected: %s\n - found:    %s", ref, s)
-	}
-}
-
-func TestGoodEggsEventStringWithoutJSON(t *testing.T) {
-	d := time.Date(2016, 6, 13, 12, 23, 42, 123456000, time.Local)
-	m := Message{
-		Group:  "abc",
-		Stream: "0123456789",
-		Event: ecslogs.Event{
-			Level:   ecslogs.INFO,
-			Time:    d,
-			Message: "Hello World!",
-			Info:    ecslogs.EventInfo{Host: "localhost"},
-			Data:    ecslogs.EventData{},
-		},
-	}
-
-	ref := fmt.Sprintf(
-		`{"level":"INFO","time":"%s","info":{"host":"localhost"},"data":{},"message":"Hello World!"}`,
-		d.Format(time.RFC3339Nano),
-	)
-
-	if s := m.GoodEggsEventString(); s != ref {
+	if s := m.String(); s != ref {
 		t.Errorf("invalid string representation of the message:\n - expected: %s\n - found:    %s", ref, s)
 	}
 }
