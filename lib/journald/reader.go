@@ -118,6 +118,7 @@ func (r *reader) getMessage() (msg lib.Message, ok bool, err error) {
 		metadata["host"] = r.getString("CONTAINER_ID")
 		metadata["docker_id"] = r.getString("CONTAINER_ID_FULL")
 		metadata["docker_name"] = r.getString("CONTAINER_NAME")
+		metadata["docker_image"] = r.getString("CONTAINER_IMAGE_NAME")
 		metadata["ecs_task"] = r.getString("CONTAINER_TASK_UUID")
 
 		// assign metadata to the `logspout` property
