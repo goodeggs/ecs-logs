@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"bytes"
 	"encoding/json"
 	"sync"
 
@@ -15,9 +16,36 @@ type Message struct {
 	JSON   map[string]interface{} `json:"json,omitempty"`
 }
 
+func jsonMarshalWithTimeFirst(m map[string]interface{}) ([]byte, error) {
+	if t, ok := m["time"]; ok {
+		mWithoutTime := make(map[string]interface{})
+		for k, v := range m {
+			if k == "time" {
+				continue
+			}
+			mWithoutTime[k] = v
+		}
+
+		b, err := json.Marshal(mWithoutTime)
+		if err != nil {
+			return nil, err
+		}
+
+		tb, err := json.Marshal(t)
+		if err != nil {
+			return nil, err
+		}
+
+		res := bytes.Join([][]byte{b[:1], []byte(`"time":`), tb, []byte(`,`), b[1:]}, []byte{})
+		return res, nil
+	}
+
+	return json.Marshal(m)
+}
+
 func (m Message) Bytes() []byte {
 	if m.JSON != nil {
-		b, _ := json.Marshal(m.JSON)
+		b, _ := jsonMarshalWithTimeFirst(m.JSON)
 		return b
 	}
 	b, _ := json.Marshal(m)
